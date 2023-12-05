@@ -1,0 +1,158 @@
+# Вход
+### 
+POST http://127.0.0.1:8000/api/v1/user/login
+content-type: application/json
+
+{
+    "email": "test@test.ru",
+    "password": "1234"
+}
+
+# Регистрация
+###
+POST http://127.0.0.1:8000/api/v1/user/register
+content-type: application/json
+
+
+{
+    "first_name":"test",
+    "last_name":"test",
+    "email":"test@test.ru",
+    "company":"test",
+    "position":"test",
+    "password":"1234"
+}
+
+# Обновленеи прайса
+###
+POST http://127.0.0.1:8000/api/v1/partner/update
+content-type: application/json
+Authorization: Token Abracadabra-partner
+
+
+
+
+# Информация о пользователе
+###
+GET http://127.0.0.1:8000/api/v1/user/details
+content-type: application/json
+Authorization: Token Abracadabra-user
+
+
+# Список магазинов
+###
+GET http://127.0.0.1:8000/api/v1/shops
+content-type: application/json
+
+
+
+# Список всех товаров
+###
+GET http://127.0.0.1:8000/api/v1/products
+content-type: application/json
+
+
+
+
+#  Статус продавца
+###
+GET http://127.0.0.1:8000/api/v1/partner/status
+content-type: application/json
+Authorization: Token Abracadabra-partner
+
+
+# Добавления контактов пользователя
+###
+POST http://127.0.0.1:8000/api/v1/user/contact
+content-type: application/json
+Authorization: Token Abracadabra-user
+ensure_ascii : False
+
+{
+        
+            "city":"111",
+            "street":"111",
+            "house":"111",
+            "structure":"111",
+            "building":"111",
+            "apartment":"111",
+            "user":"111",
+            "phone":"111"
+}
+
+# Изменнение контактов пользователя
+###
+PUT http://127.0.0.1:8000/api/v1/user/contact
+content-type: application/json
+Authorization: Token Abracadabra-user
+ensure_ascii : False
+
+{
+            "id" : "1",
+            "city":"222",
+            "street":"222"
+         
+}
+
+# Получить контактвы пользователя
+###
+GET http://127.0.0.1:8000/api/v1/user/contact
+content-type: application/json
+Authorization: Token Abracadabra-user
+
+# Добавление товаров в корзину
+###
+POST http://127.0.0.1:8000/api/v1/basket
+content-type: application/json
+Authorization: Token Abracadabra-user
+ensure_ascii : False
+
+ {
+    "items":[ {
+    "order" : 1,
+    "product_info" : 5,
+    "quantity" :1
+}]}
+
+
+# Просмотр корзины
+###
+GET http://127.0.0.1:8000/api/v1/basket
+content-type: application/json
+Authorization: Token Abracadabra-user
+
+
+
+# разместить заказ из корзины
+###
+POST http://127.0.0.1:8000/api/v1/order
+content-type: application/json
+ensure_ascii : False
+Authorization: Token Abracadabra-user
+
+{
+ "id" : "4",
+ "contact" : "1"
+}
+
+
+# получить заказы пользователь
+###
+GET http://127.0.0.1:8000/api/v1/order
+content-type: application/json
+Authorization: Token Abracadabra-user
+ensure_ascii : False
+
+
+# получить заказы поставщик
+###
+GET http://127.0.0.1:8000/api/v1/partner/orders 
+content-type: application/json
+Authorization: Token Abracadabra-partner
+
+
+
+
+
+
+
