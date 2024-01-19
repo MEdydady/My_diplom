@@ -190,8 +190,8 @@ REST_FRAMEWORK = {
 
 # Celery settings
 # REDIS_HOST = env("REDIS_HOST")
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://my_redis:6379'
+CELERY_RESULT_BACKEND = 'redis://my_redis:6379'
 
 
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
