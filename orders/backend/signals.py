@@ -4,6 +4,7 @@ from django.dispatch import Signal, receiver
 from django_rest_passwordreset.signals import reset_password_token_created
 
 from backend.models import ConfirmEmailToken, User
+from backend.tasks import send_email_task
 
 new_user_registered = Signal()
 
@@ -42,19 +43,11 @@ def new_user_registered_signal_mail(user):
     """
     # send an e-mail to the user
     token, _ = ConfirmEmailToken.objects.get_or_create(user=user)
-
-    send_mail(
-        # title:
-        f"Password Reset Token for {user.email}",
-        # message:
-        token.key,
-        # from:
-        settings.EMAIL_HOST_USER,
-        # to:
-        [user.email],
-        fail_silently=False,
-    )
-
+    
+    st = "Привет ))"
+    send_email_task.delay(user.email, st)
+    
+   
 
 @receiver(new_order)
 def new_order_signal(user_id, **kwargs):

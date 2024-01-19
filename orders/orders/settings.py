@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'baton',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,7 +47,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_rest_passwordreset',
+    # 'django_celery_results',
     'backend',
+    'social_django',
+    'drf_spectacular',  
+    'baton.autodiscover',
+    'easy_thumbnails',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
             ],
         },
     },
@@ -87,6 +94,7 @@ DATABASES = {
     'default': {
         "ENGINE": os.getenv("DB_ENGINE"),
         "NAME": os.getenv("DB_NAME"),
+        # "HOST": 'my_postgres',
         "HOST": os.getenv("DB_HOST"),
         "PORT": os.getenv("DB_PORT"),
         "USER": os.getenv("DB_USER"),
@@ -164,11 +172,88 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
 
     ),
-
+    'DEFAULT_THROTTLE_CLASSES': (
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ),
+    'DEFAULT_THROTTLE_RATES': 
+    {"anon": "100/day", "user": "1000/day"},
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 
+# Celery settings
+# REDIS_HOST = env("REDIS_HOST")
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+AUTHENTICATION_BACKENDS = {
+    'social_core.backends.vk.VKOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+}
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+
+SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_VK_OAUTH2_KEY')
+SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_VK_OAUTH2_SECRET')
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/auth/complete/google-oauth2/'
+SOCIAL_AUTH_VK_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/auth/complete/vk-oauth2/'
+
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.social_auth.associate_by_email',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data'
+)
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+BATON = {
+    "SITE_HEADER": "Сервис заказов",
+    "SITE_TITLE": "Service",
+    "INDEX_TITLE": "Администрирование API",
+    "SUPPORT_HREF": "https://github.com/Medydady/",
+    "COPYRIGHT": 'copyright © 2023 <a href="https://github.com/MEdydady/">Medydady</a>',
+    "POWERED_BY": '<a href="https://github.com/MEdydady/">Medydady</a>',
+    "CONFIRM_UNSAVED_CHANGES": True,
+    "SHOW_MULTIPART_UPLOADING": True,
+    "ENABLE_IMAGES_PREVIEW": True,
+    "CHANGELIST_FILTERS_IN_MODAL": True,
+    "CHANGELIST_FILTERS_ALWAYS_OPEN": False,
+    "CHANGELIST_FILTERS_FORM": True,
+    "MENU_ALWAYS_COLLAPSED": False,
+    "MENU_TITLE": "Menu",
+    "MESSAGES_TOASTS": False,
+    "GRAVATAR_DEFAULT_IMG": "retro",
+    "GRAVATAR_ENABLED": True,
+    "LOGIN_SPLASH": "",
+    "FORCE_THEME": None,
+    "SEARCH_FIELD": {
+        "label": "Поиск...",
+        "url": "/search/",
+    },   
+}
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'my_preview_1': {'size': (250, 180), 'crop': 'smart'},
+        'my_preview_2': {'size': (500, 0), 'crop': 'smart'},
+        'my_preview_3': {'size': (75, 0), 'crop': 'smart'},
+    },
 }
