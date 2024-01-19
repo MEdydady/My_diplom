@@ -51,9 +51,9 @@ services:
       context: .
     volumes:
       - .:/orders
-    command: celery -A orders worker --loglevel=INFO
-    # command: python -m celery -A orders.celery_app worker --loglevel=INFO
+    command: celery -A orders.celery_app worker --loglevel=INFO
     depends_on:
       - postgres 
       - redis
+      - backend
   
