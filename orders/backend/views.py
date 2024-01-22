@@ -13,12 +13,16 @@ from requests import get
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from ujson import loads as load_json
 from yaml import Loader
 from yaml import load as load_yaml
+
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework.throttling import AnonRateThrottle
+
 
 from backend.access import Owner, Shops
 from backend.models import (Category, ConfirmEmailToken, Contact, Order,
@@ -43,6 +47,12 @@ class NewUserRegistrationView(APIView):
     serializer_class = NewUserRegistrationSerializer
     queryset = User.objects.all()
 
+   
+    @extend_schema(
+        methods=["post"],
+        description="Регистрация нового пользователя",
+        responses={200: NewUserRegistrationSerializer},
+    )
     def post(self, request, *args, **Kwargs):
         serializer = NewUserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
@@ -120,6 +130,9 @@ class LoginAccountView(APIView):
 
 
 class CategoryView(ListAPIView):
+    throttle_classes = [AnonRateThrottle]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
     """
     Класс для просмотра категорий
     """
@@ -503,3 +516,16 @@ class OrderView(APIView):
                         return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+
+# class ImageUploadView(APIView):
+#     parser_classes = [MultiPartParser, FormParser]
+
+#     def post(self, request, *args, **kwargs):
+#         file_serializer = ImageSerializer(data=request.data)
+
+#         if file_serializer.is_valid():
+#             file_serializer.save()
+#             create_thumbnail.delay(file_serializer.data['image'], {'size': (100, 100), 'crop': True})
+#             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+#         else:
+#             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

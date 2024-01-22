@@ -16,14 +16,17 @@ Including another URLconf
 """
 from baton.autodiscover import admin
 from django.urls import include, path
-# from backend.views import SpectacularAPIView
-# from backend.views import SpectacularSwaggerView
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('baton/', include('baton.urls')),
     path("api/v1/", include("backend.urls", namespace="backend")),
-    # path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    # path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
     path('', include('social_django.urls', namespace='social')),
 ]

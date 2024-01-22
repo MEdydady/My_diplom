@@ -4,6 +4,8 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_rest_passwordreset.tokens import get_token_generator
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 
 USER_TYPE_CHOICES = (
     ("shop", "Магазин"),
@@ -89,6 +91,14 @@ class User(AbstractUser):
         choices=USER_TYPE_CHOICES,
         default="buyer",
     )
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar_thumbnail = ImageSpecField(source='avatar',
+                                      processors=[ResizeToFill(100, 100)],
+                                      format='JPEG',
+                                      options={'quality': 60})
+
+
+
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

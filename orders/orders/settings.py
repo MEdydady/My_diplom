@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'social_django',
     'drf_spectacular',  
     'baton.autodiscover',
+    'imagekit',
     'easy_thumbnails',
 ]
 
@@ -141,8 +142,8 @@ STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # STATICFILES_DIRS = []
 
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# MEDIA_URL = '/media/'
+MEDIA_URL = 'media/' 
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
@@ -229,7 +230,7 @@ BATON = {
     "SITE_TITLE": "Service",
     "INDEX_TITLE": "Администрирование API",
     "SUPPORT_HREF": "https://github.com/Medydady/",
-    "COPYRIGHT": 'copyright © 2023 <a href="https://github.com/MEdydady/">Medydady</a>',
+    "COPYRIGHT": 'copyright © 2024 <a href="https://github.com/MEdydady/">Medydady</a>',
     "POWERED_BY": '<a href="https://github.com/MEdydady/">Medydady</a>',
     "CONFIRM_UNSAVED_CHANGES": True,
     "SHOW_MULTIPART_UPLOADING": True,

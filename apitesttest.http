@@ -23,6 +23,7 @@ content-type: application/json
     "password":"1234"
 }
 
+###
 # Обновленеи прайса
 ###
 POST http://127.0.0.1:8000/api/v1/partner/update

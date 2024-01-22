@@ -1,6 +1,9 @@
 # Верстальщик
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from django.core.files import File
+from .models import User
+from .tasks import upload_avatar
 
 from backend.models import (Category, Contact, Order, OrderItem, Product,
                             ProductInfo, ProductParameter, Shop, User)
@@ -17,14 +20,20 @@ class NewUserRegistrationSerializer(serializers.ModelSerializer):
             "company",
             "position",
             "password",
+            "avatar",
         )
         read_only_fields = ("id",)
-
+        
     def create(self, data):
+        avatar = data.pop('avatar', None)
         password = data.pop("password")
         user = User(**data)
         user.set_password(password)
         user.save()
+        if avatar:
+            avatar_path = avatar.temporary_file_path()
+            upload_avatar.delay(user.id, avatar_path)
+        
         return user
 
 

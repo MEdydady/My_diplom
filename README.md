@@ -31,19 +31,29 @@
 
 ### Запуск приложения
 
-**Установка  зависимостей:**
-sudo pip3 install -r requirements.txt
+**Запустить docker-compose**
 
+>> docker-compose up --build
 
-**Создание миграций:**  
-python3 manage.py makemigrations  
-**Применение миграций:**  
-python3 manage.py migrate  
-**Запуск сервера:**  
-python3 manage.py runserver  
-**Создание суперпользователя:**  
-python3 manage.py createsuperuser   
+Для доступа к админстративной панели Django создаем суперпользователя
 
+>> docker-compose exec backend python manage.py createsuperuse
+ 
+
+## Адреса сервиса 
+
+- API сервис: [127.0.0.1:8000/api/v1/](http://127.0.0.1:8000/api/v1/)
+- Админ панель Django: [127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
 
 **Примеры запросов**
+файл - apitesttest.http
+
+**Команды для тестирования:**
+Запуск тестирования:
+>> sudo docker exec orders-backend-1 pytest 
+Формирование отчета о покрытии тестами:
+>> sudo docker exec orders-backend-1 pytest --cov=.
+
+
+***Примеры запросов*** 
 файл - apitesttest.http
