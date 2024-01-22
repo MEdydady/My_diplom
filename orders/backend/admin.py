@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.utils.html import format_html
 
 from backend.models import (Category, ConfirmEmailToken, Contact, Order,
                             OrderItem, Parameter, Product, ProductInfo,
@@ -18,7 +19,7 @@ class CustomUserAdmin(UserAdmin):
         (None, {"fields": ("email", "password", "type")}),
         (
             "Personal info",
-            {"fields": ("first_name", "last_name", "company", "position")},
+            {"fields": ("first_name", "last_name", "company", "position","avatar")},
         ),
         (
             "Permissions",
@@ -34,8 +35,13 @@ class CustomUserAdmin(UserAdmin):
         ),
         ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
-    list_display = ("email", "first_name", "last_name", "is_staff")
+    list_display = ("email", "first_name", "last_name", "is_staff","display_avatar_thumbnail")
 
+    def display_avatar_thumbnail(self, obj):
+        if obj.avatar:
+            return format_html('<img src="{}" width="50" height="50" />'.format(obj.avatar_thumbnail.url))
+        return None
+    display_avatar_thumbnail.short_description = 'Avatar Thumbnail'
 
 @admin.register(Shop)
 class ShopAdmin(admin.ModelAdmin):
@@ -89,3 +95,4 @@ class ConfirmEmailTokenAdmin(admin.ModelAdmin):
         "key",
         "created_at",
     )
+

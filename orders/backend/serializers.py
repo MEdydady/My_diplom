@@ -4,6 +4,8 @@ from rest_framework import serializers
 from django.core.files import File
 from .models import User
 from .tasks import upload_avatar
+import os
+from django.conf import settings
 
 from backend.models import (Category, Contact, Order, OrderItem, Product,
                             ProductInfo, ProductParameter, Shop, User)
@@ -30,8 +32,14 @@ class NewUserRegistrationSerializer(serializers.ModelSerializer):
         user = User(**data)
         user.set_password(password)
         user.save()
+        
         if avatar:
-            avatar_path = avatar.temporary_file_path()
+            # Сохраните файл на диск
+            avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatars', f'1.jpg')
+            with open(avatar_path, 'wb+') as destination:
+                for chunk in avatar.chunks():
+                    destination.write(chunk)
+            # Запустите задачу
             upload_avatar.delay(user.id, avatar_path)
         
         return user
